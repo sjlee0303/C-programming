@@ -1,0 +1,2474 @@
+#if 0
+// 1620 - 시간 초과
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <string.h>
+#include <cctype>
+
+using namespace std;
+
+int main() {
+
+	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+
+	int N, M;
+	char **arr = nullptr;
+	char** _arr = nullptr;
+	arr = new char* [100000];
+	_arr = new char* [100000];
+
+	cin >> N >> M;
+
+	for (int i = 0; i < N; i++) {
+		arr[i] = new char[20];
+	}
+	for (int i = 0; i < M; i++) {
+		_arr[i] = new char[20];
+	}
+
+	for (int i = 0; i < N; i++) {
+		cin >> arr[i];
+	}
+
+	for (int i = 0; i < M; i++) {
+		cin >> _arr[i];
+	}
+
+	for (int i = 0; i < M; i++) {
+		//if ('0' <= _arr[i][0] && _arr[i][0] <= '9') {
+		if(isdigit(_arr[i][0])!=0){
+			int num = stoi(_arr[i]); // string을 int로 변환
+
+			strcpy(_arr[i], arr[num - 1]);
+			//_arr[i] = arr[num - 1]; 
+			/*
+			이렇게 하면 delete_array함수에서 에러가 남
+			-> c1에 대해서 깊은복사를 하려고 했지만 
+			items가 동일한 포인터를 가지면서 얖은복사 처럼 되어 버렸네요.
+			그래서 c1이 delete 될 때는 이미 
+			그 전에 delete되 버린 상태인 것입니다.
+
+			==> 그래서 그냥 문자열 복사를 함.
+			*/
+		}
+		else {
+			for (int j = 0; j < N; j++) {
+				string s = arr[j];
+				if (s.compare(_arr[i]) == 0) {
+					//_itoa(j + 1, _arr[i], 10); // 정수를 스트링으로 변환
+					sprintf(_arr[i], "%d", j+1);
+					//itoa 는 C 표준 함수가 아니며, 일부 C 구현체에만 지원합니다.
+					//sprintf(ch, "%d", result); 를 사용하세요.
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < M; i++) {
+		cout << _arr[i] << "\n";
+	}
+
+	// 동적 할당 해제
+	for (int i = 0; i < N; i++) {
+		delete[] arr[i];
+	}
+	delete[] arr;
+	for (int i = 0; i < M; i++) {
+		delete[] _arr[i];
+	}
+	delete[] _arr;
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 1620 
+
+/*
+
+hash 
+vector 개념들 !!! 중요
+
+*/
+
+#include <iostream>
+#include <map>
+#include <string>
+#include <string.h>
+#include <vector>
+
+using namespace std;
+map<int, string> mapset;
+
+int main() {
+
+	/*cin.tie(NULL);
+	ios::sync_with_stdio(false);*/
+
+	int N, M;
+	cin >> N >> M;
+
+	string s;
+	map<string, int> map;
+	vector<string> name;
+	vector<string> result;
+
+	for (int i = 0; i < N; i++) {
+		cin >> s;
+		name.push_back(s);
+		map.insert(make_pair(s, i+1));
+	}
+
+	for (int i = 0; i < M; i++) {
+		cin >> s;
+
+		// 와 .. 이거는 왜 안되냐 .. 억까다
+		// 
+		//if ("0" <= s && s <= "9") { // 숫자가 주어질 때
+		//	int num = stoi(s);
+		//	result.push_back(name[num - 1]);
+		//}
+		//else { // 포켓몬 이름이 주어질 때
+		//	result.push_back(to_string(map.find(s)->second));
+		//}
+
+		if (s[0] >= 65 && s[0] <= 90) {
+			// 포켓몬 이름이 주어진 경우 (맨 앞 문자가 영어 대문자인것을 이용)
+			result.push_back(to_string(map[s]));
+			//result 벡터는 string이기 때문에 번호를 string으로 변환해줌
+		}
+		else // 도감 번호가 주어진 경우
+		{
+			result.push_back(name[stoi(s) - 1]);
+			//입력값은 string 그래서 정수형으로 변환 후 넣어줌
+			// -1을 해준 이유는 name배열은 0부터 시작했기 때문 
+		}
+
+
+	}
+
+	for (int i = 0; i < M; i++) {
+		cout << result[i] << "\n";
+	}
+
+	return 0;
+}
+
+
+#endif
+
+#if 1
+
+
+#endif
+
+#if 0
+//1269 -> 시간 초과
+#include <iostream>
+
+int main() {
+	
+	using namespace std;
+
+	int A_num;
+	int B_num;
+
+	int* A = (int*)malloc(sizeof(int)* 200000);
+	int* B = (int*)malloc(sizeof(int) * 200000);
+
+	int* _A = (int*)malloc(sizeof(int) * 200000);
+	int* _B = (int*)malloc(sizeof(int) * 200000);
+	int _A_num = 0;
+	int _B_num = 0;
+
+	cin >> A_num >> B_num;
+
+	for (int i = 0; i < A_num; i++) {
+		cin >> A[i];
+	}
+
+	for (int i = 0; i < B_num; i++) {
+		cin >> B[i];
+	}
+
+	// A-B
+	for (int i = 0; i < A_num; i++) {
+		for (int j = 0; j < B_num; j++) {
+			if (A[i] == B[j]) {
+				break;
+			}
+			else if (j == B_num - 1) {
+				_A[_A_num] = A[i];
+				_A_num++;
+			}
+		}
+	}
+
+	// B-A
+	for (int i = 0; i < B_num; i++) {
+		for (int j = 0; j < A_num; j++) {
+			if (B[i] == A[j]) {
+				break;
+			}
+			else if (j == A_num - 1) {
+				_B[_B_num] = B[i];
+				_B_num++;
+			}
+		}
+	}
+
+	cout << _A_num + _B_num;
+
+	free(A);
+	free(B);
+	free(_A);
+	free(_B);
+
+	return 0;
+}
+
+#endif
+
+#if 0
+//1269 -> 통과
+
+// set : #include <set>
+
+#include <iostream>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+int main() {
+
+	map <int, int> A;
+	map <int, int> B;
+	int A_num;
+	int B_num;
+
+	vector<int> keys; // 키 저장하는 vector
+
+	cin >> A_num >> B_num;
+
+	int temp;
+	for (int i = 0; i < A_num; i++) {
+		cin >> temp;
+		A.insert(pair<int, int>(temp, temp));
+	}
+
+	for (int i = 0; i < B_num; i++) {
+		cin >> temp;
+		B.insert(pair<int, int>(temp, temp));
+	}
+
+	for (auto it = A.begin(); it != A.end(); it++) {
+		keys.push_back(it->first);
+	}
+
+	for (const auto& key : keys) {
+		if (B.find(key) != B.end()) { // 같은 key있으면 지우기
+			A.erase(key);
+			B.erase(key);
+		}
+	}
+
+	cout << A.size() + B.size();
+
+	return 0;
+}
+
+#endif
+
+#if 0
+
+//1270 - 런타임 에러
+#include <iostream>
+#include <map>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+int main() {
+
+	vector<string> v;
+
+	int n;
+	int Ti;
+
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		cin >> Ti;
+
+		map<int, int> m;
+		vector<int> keys(100001,1);
+
+		int temp;
+		for (int j = 0; j < Ti; j++) {
+			cin >> temp;
+
+			if (m.count(temp) > 0) {
+				keys[temp]++;
+			}
+			else {
+				m.insert(pair<int, int>(temp, 1));
+			}
+
+		}
+
+		vector<int> _keys;
+
+		for (auto it = m.begin(); it != m.end(); it++) {
+			_keys.push_back(it->first);
+		}
+
+		int sz=0;
+		for (const auto& key : _keys) {
+			if (keys[key] > Ti / 2) {
+				v.push_back(to_string(key));
+				break;
+			}
+			sz = v.size();
+		}
+		if (sz == v.size()) {
+			v.push_back("SYJKGW");
+		}
+	}
+
+	for (int i = 0; i < v.size(); i++) {
+		cout << v[i] << endl;
+	}
+
+	return 0;
+}
+
+#endif
+
+#if 0
+//1270 - 런타임 에러
+#include <iostream>
+#include <map>
+#include <vector>
+#include <string>
+
+//  2^31  -> long long으로 해야함.
+
+using namespace std;
+
+int main() {
+
+	vector<string> v;
+
+	int n;
+	int Ti;
+
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		cin >> Ti;
+
+		map<long long, int> m;
+
+		int temp;
+		for (int j = 0; j < Ti; j++) {
+			cin >> temp;
+
+			if (m.count(temp) > 0) {
+				m.find(temp)->second++;
+			}
+			else {
+				m.insert(pair<int, int>(temp, 1));
+			}
+
+		}
+
+		vector<int> _keys;
+
+		for (auto it = m.begin(); it != m.end(); it++) {
+			_keys.push_back(it->first);
+		}
+
+		int sz = 0;
+		for (const auto& key : _keys) {
+			if (m.find(key)->second++ > Ti / 2) {
+				v.push_back(to_string(key));
+				break;
+			}
+			sz = v.size();
+		}
+		if (sz == v.size()) {
+			v.push_back("SYJKGW");
+		}
+	}
+
+	for (int i = 0; i < v.size(); i++) {
+		cout << v[i] << "\n";
+	}
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 23253
+#include <iostream>
+#include <stack>
+
+using namespace std;
+
+int main() {
+
+	int N, M;
+
+	stack<int> st;
+
+	cin >> N >> M;
+
+	int k;
+	int temp;
+	for (int i = 0; i < M; i++) {
+		cin >> k;
+
+		for (int j = 0; j < k; j++) {
+			cin >> temp;
+			st.push(temp);
+		}
+
+	}
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 4949
+
+// postfix로 푸는
+
+/*
+
+getline
+여는 괄호면 push
+
+문자열 끝까지 돌고 나오고 스택이 비어있을 때 yes ! 
+
+*/
+
+#include <iostream>
+
+int main() {
+
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 3077 
+// 임진왜란
+
+/*
+
+map key와 value로 순서 판단 ..
+
+*/
+
+
+#endif
+
+#if 0
+// 11286
+
+/*
+
+절댓값을 기준으로 하되 ~~ 해서 heap을 만ㄷ르어쟝룸ㄴㅇㄹ
+
+class 공부 하기 ***
+
+public 
+
+절 댓 값 
+abs로 할 수 있음
+
+operator()(int a, int b) --> 괄호 연산자 ...????
+
+*/
+
+/*
+우선순위 큐
+
+c++에는 이미 정의가 되어 있음
+
+#include <que>
+
+priority_queue< 조 건 ? >
+
+push pop 
+
+*/
+
+
+#endif
+
+#if 0
+// 1717
+// --> 이거는 건너뜀
+
+#endif
+
+// ==================== 2주차
+
+#if 0
+// 25192 - 인사성 밝은 곰곰이
+#include <iostream>
+#include <string.h>
+#include <map>
+
+// set : 중복이 안된다. key값이 중복이 안된다. 
+
+using namespace std;
+
+int main() {
+
+	long long N;
+	string _s;
+	map <string, int> s;
+
+	cin >> N;
+
+	long long num = 0;
+	for (int i = 0; i < N; i++) {
+		cin >> _s;
+
+		if (strcmp(const_cast<char*>(_s.c_str()), "ENTER") == 0) {
+			s.clear();
+			continue;
+		}
+
+		if (s.count(_s) == 0) {
+			s.insert(pair<string, int>(_s, 1));
+		}
+		else continue;
+
+		num++;
+
+	}
+
+	printf("%d", num);
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 2910 : 빈도 정렬
+#include <iostream>
+#include <map>
+#include <vector>
+
+using namespace std;
+
+int main() {
+
+	long long N, C;
+	cin >> N >> C;
+
+	long long temp;
+	map <long long, int> m;
+	vector <long long> v;
+
+	for (int i = 0; i < N; i++) {
+		cin >> temp;
+		
+		if (m.count(temp) == 0) {
+			m.insert(pair<int, int>(temp, 1));
+			v.push_back(temp);
+		}
+		else m.find(temp)->second++;
+	}
+
+	for (int i = v.size()-1; i > 0; i--) { // 버블소트로 정렬
+		for (int j = 0; j < i; j++) {
+
+			if (m.find(v[j])->second < m.find(v[j+1])->second) { // 빈도수로 v vector 정렬
+				long long t = v[j];
+				v[j] = v[j+1];
+				v[j + 1] = t;
+			}
+
+		}
+	}
+
+	for (int i = 0; i < v.size(); i++) {
+
+		long long c = v[i];
+
+		for (int j = 0; j < m.find(c)->second; j++) {
+			cout << c << " ";
+		}
+	}
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 1966 : 프린터 큐
+/*
+step 1. 뒤에 나보다 큰 것이 있을 때 뒤로 옮겨주기
+step 2. 위의 step을 끝낼 탈출 조건 찾기
+		-> 
+
+		1 1 3 4 5 2
+		1 3 4 5 2 1
+		3 4 5 2 1 1 
+		4 5 2 1 1 3
+		5 2 1 1 3 4
+		--> 여기서 5를 팝한다.
+		(5) 2 1 1 3 4
+			1 1 3 4 2
+			1 3 4 2 1
+			3 4 2 1 1
+			4 2 1 1 3
+		--> 여기서 4를 팝한다.
+		(5 4) 2 1 1 3
+			  1 1 3 2
+			  1 3 2 1
+			  3 2 1 1
+		--> 여기서 3을 팝한다.
+		(5 4 3) 2 1 1
+		--> 여기서 2, 1, 1를 팝한다.
+
+이 조건일 때 첫번째 반복문 탈출 문은 n번째 숫자 이후의 값이 n번쨰 숫자 보다 작거나 같을 경우
+반복문을 탈출하고 다시 다음 n+1번째 숫자와 계속해서 비교를 하는 것
+
+
+*/
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+int main() {
+
+	vector<int> q;
+	vector<int> v; // 바뀌는 순서를 저장하는 vector
+	vector<int> _v; // 몇번째 출력인지 저장하는 vector
+
+	int test;
+	cin >> test;
+
+	int N, M;
+	int temp;
+	for (int i = 0; i < test; i++) {
+		cin >> N >> M;
+
+		q.clear();
+		v.clear();
+
+		for (int j = 0; j < N; j++) {
+			cin >> temp;
+			q.push_back(temp);
+			v.push_back(j);
+		}
+
+		// 여기서 정렬을 한다.
+		int j=0;
+		while (j < N-1) {
+
+			for (int k = j + 1; k < N; k++) {
+				if (q[j] < q[k]) {
+					int t = q[j];
+					q.push_back(t);
+					q.erase(q.begin() + j);
+
+					int _t = v[j];
+					v.push_back(_t);
+					v.erase(v.begin() + j);
+
+					k = j; // 여기서 k = j+1이라고 하면 위의 반복문에서 j++을 하기 때문에
+					// k = j라고 초기화 해줘야함.
+				}
+			}
+
+			j++;
+		}
+
+		for (int k = 0; k < v.size(); k++) {
+			if (v[k] == M) {
+				_v.push_back(k+1);
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < _v.size(); i++) {
+		cout << _v[i] << endl;
+	}
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 1918 : 후위 표기식
+
+/*
+
++, -, *, / 의 수식이 나오면 스택에 있는 값 pop후 수식 넣기
+
+변수는 무조건 바로 출력
+우선순위 높은 것 * 와 / 는 그냥 바로 스택에 push
+	근데, 이전 값이 *나 /이면 이전 값 pop하고 기존 값 push A*B*C*D -> AB*C*D*
+우선순위 낮은 -와 +는 이전 값이 *나 /이 있으면 스택에 있는 값 모두 pop하고 push
+
+*/
+
+// A*B+C
+// (A+(B*C))-(D/E)
+// A+B+C+D -> AB+C+D
+// A*B*C*D -> AB*C*D*
+// (A+B)*C-(D-E)*(F+G)
+
+// 예외 
+// (A-(B/C+D))*(E*F-G)
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+
+	vector <char> stack;
+	vector <char> print;
+	
+	string s;
+	cin >> s;
+
+	int k = 0;
+	while (1) {
+
+		if (s[k] == '\0') {
+
+			while (stack.empty() != 1) {
+				char temp = stack.back();
+				stack.erase(stack.end()-1); // 맨 마지막 원소를 삭제할 때 v.end()-1
+
+				print.push_back(temp); // pop
+			}
+
+			break; // 스택이 다 비었으면 break;
+		}
+
+		if (s[k] >= 'A' && s[k] <= 'Z') {
+			print.push_back(s[k]);
+		}
+		else if (s[k] == '*' || s[k]=='/') { // 우선 순위가 높음 그냥 넣어됨
+			if (stack.empty() == 1) {
+				stack.push_back(s[k]); // push
+			}
+			else if(stack.back()=='*' || stack.back()=='/') {
+				char temp = stack.back();
+				stack.erase(stack.end() - 1); 
+				print.push_back(temp); 
+
+				stack.push_back(s[k]); // push
+			}
+			else {
+				stack.push_back(s[k]); // push
+			}
+		}
+		else if (s[k] == '+' || s[k] == '-') { // 이전에 *나 /인지 확인
+
+			if (stack.empty() == 1) {
+				stack.push_back(s[k]);
+			}
+			else if (stack.back() == '*' || stack.back() == '/') { // * 나 /이면 pop
+				while (stack.empty() != 1 && stack.back()!='(') { // '('가 나올 경우를 고려하지 않아서 
+					//(A-(B/C+D))*(E*F-G) 이 케이스에서 걸렸었음.
+					char temp = stack.back();
+					stack.erase(stack.end() - 1); // 맨 마지막 원소를 삭제할 때 v.end()-1
+					print.push_back(temp); // pop
+				}
+
+				stack.push_back(s[k]);
+			}
+			else if (stack.back() == '(') {
+				stack.push_back(s[k]);
+			}
+			else { // 앞에 + 나 -가 있을 경우에
+				char temp = stack.back();
+				stack.erase(stack.end() - 1);
+				print.push_back(temp);
+				
+				stack.push_back(s[k]);
+			}
+
+		}
+		else if (s[k] == '(') { // 열린 괄호 나오면 push
+			stack.push_back(s[k]);
+		}
+		else if (s[k] == ')') { // 닫힌 괄호가 나오면 
+			while (stack.back() != '(') { // 열린 괄호 나올 때까지 pop
+				char temp = stack.back();
+				stack.erase(stack.end() - 1); 
+				print.push_back(temp);
+			}
+			stack.erase(stack.end() - 1); // 열린 괄호 지우기 pop
+		}
+
+		k++;
+
+	}
+
+	for (int i = 0; i < print.size(); i++) {
+		cout << print[i];
+	}
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 1935 : 후위표기식2 - 15퍼센트 .. 왜 안될깡
+// 문자를 스택에 저장해서 그 문자에 해당하는 값을 map에서 찾아서 연산을 했는데
+// 왜 오류가 난지 잘 모르겠다.
+
+// 스택에 저장하는 값을 바로 double형으로 바로 저장하니까 통과했다.
+
+/*
+
+후위 표기식 계산법부터 알아야 한다.
+
+후위표기식은 35+와 같이 연산자가 피연산자 뒤에 있는 표기식이다.
+	- 3+5*2 -> 352*+
+	- (3+5)*2 -> 35+2*
+
+
+*/
+
+#include <stdio.h>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using namespace std;
+
+int main() {
+
+	int N;
+	string s;
+	map<char, double> _s;
+	cin >> N >> s;
+
+	int temp; // 100보다 작거나 같은 자연수
+	for (int i = 0; i < N; i++) {
+		cin >> temp;
+
+		_s.insert(pair<char, double>('A' + i, temp));
+	}
+
+	// 해당 변수에 해당하는 값 확인하는 코드
+	/*for (map<char, double>::iterator itr = _s.begin(); itr != _s.end(); ++itr) {
+		std::cout << itr->first << " " << itr->second << std::endl;
+	}*/
+
+	vector<char> stack;
+	double temp1 = 0;
+	double temp2 = 0;
+	double res = 0;
+	int check = -1;
+	for (int i = 0; s[i] != '\0'; i++) {
+
+		if (s[i] >= 'A' && s[i] <= 'Z') {
+			stack.push_back(s[i]);
+		}
+		else { // 연산자 일때
+
+			temp1 = _s.find(stack.back())->second; // 스택에서 두개 꺼내서
+			stack.erase(stack.end() - 1);
+			temp2 = _s.find(stack.back())->second;
+			stack.erase(stack.end() - 1);
+
+			switch (s[i]) {
+			case '*' :
+				res = temp2 * temp1;
+				break;
+			
+			case '/' :
+				res = temp2 / temp1;
+				break;
+			
+			case '+' :
+				res = temp2 + temp1;
+				break;
+
+			case '-' :
+				res = temp2 - temp1;
+				break;
+			}
+
+			check = -1;
+			for (int j = 0; j < stack.size(); j++) {
+				if (stack[j] == '@') { // 스택에 @가 있는지 확인
+					check = 1;
+					break;
+				}
+			}
+
+			if (check == 1) { // 스택에 @가 있으면
+				if (_s.count('%') == 0) {
+					_s.insert(pair<char, float>('%', res));
+				}
+				else {
+					_s.find('%')->second = res;
+				}
+
+				stack.push_back('%');
+			}
+			else { // 스택에 @가 없으면
+				if (_s.count('@') == 0) {
+					_s.insert(pair<char, float>('@', res));
+				}
+				else {
+					_s.find('@')->second = res;
+				}
+
+				stack.push_back('@');
+			}
+
+		}
+
+	}
+
+	/*cout << fixed;
+	cout.precision(2);
+	cout << _s.find(stack.back())->second << '\n';*/
+
+	printf("%.2f", _s.find(stack.back())->second);
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 1935 : 후위표기식2
+
+#include <stdio.h>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using namespace std;
+
+int main() {
+
+	int N;
+	string s;
+	map<char, double> _s;
+	cin >> N >> s;
+
+	int temp; // 100보다 작거나 같은 자연수
+	for (int i = 0; i < N; i++) {
+		cin >> temp;
+
+		_s.insert(pair<char, double>('A' + i, temp));
+	}
+
+	vector<double> stack; // 값을 바로 스택에 넣기 !
+	double temp1 = 0;
+	double temp2 = 0;
+	double res = 0;
+	for (int i = 0; s[i] != '\0'; i++) {
+
+		if (s[i] >= 'A' && s[i] <= 'Z') {
+			stack.push_back(_s.find(s[i])->second);
+		}
+		else { // 연산자 일때
+
+			temp1 = stack.back(); // 스택에서 두개 꺼내서
+			stack.erase(stack.end() - 1);
+			temp2 = stack.back();
+			stack.erase(stack.end() - 1);
+
+			switch (s[i]) {
+			case '*':
+				res = temp2 * temp1;
+				break;
+
+			case '/':
+				res = temp2 / temp1;
+				break;
+
+			case '+':
+				res = temp2 + temp1;
+				break;
+
+			case '-':
+				res = temp2 - temp1;
+				break;
+			}
+
+			stack.push_back(res);
+
+		}
+
+	}
+
+	/*cout << fixed;
+	cout.precision(2);
+	cout << _s.find(stack.back())->second << '\n';*/
+
+	printf("%.2f", stack.back());
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 20551 : Sort 마스터 배지훈의 후계자
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>// sort 사용을 위해
+// sort 함수는 quick sort 알고리즘을 바탕으로 만들어졌다 O(n*logn)을 만족한다!
+
+// 궁금한 점 : 범위에 따라 int형을 써야할지 long long을 써야하는지 헷갈린다 
+// 인터넷 찾아봤는데도 잘 안나와서 자료형 크기에 따라 사용해야하는 자료형이 달라지는 
+// 느낌인 것 같지만 정확히 감이 안온다.
+
+// lower_bound -> 알고리즘에 포함되어 있는 함수
+
+using namespace std;
+
+int main() {
+
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N, M;
+	cin >> N >> M;
+
+	vector<int> v;
+	map<int, int> m;
+	int temp;
+	for (int i = 0; i < N; i++) {
+		cin >> temp;
+		v.push_back(temp);
+		m.insert(pair<int, int>(temp, -1));
+	}
+
+	sort(v.begin(), v.end());
+
+	for (int i = 0; i < N; i++) {
+		if (m.find(v[i])->second == -1) {
+			m.find(v[i])->second = i;
+		}
+	}
+
+	vector<int> _v;
+	for (int i = 0; i < M; i++) {
+		cin >> temp;
+		if (m.count(temp) == 0) {
+			_v.push_back(-1);
+		}
+		else {
+			_v.push_back(m.find(temp)->second);
+		}
+	}
+
+	for (int i = 0; i < M; i++) {
+		cout << _v[i] << "\n";
+	}
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 12605 : 단어 순서 뒤집기
+
+/*
+
+string::npos
+
+str.resize() -> 해당 인덱스 뒤의 문자열을 자른다.
+
+*/
+
+#include <iostream>
+#include <string>
+#include <map>
+#include <vector>
+#include <sstream> // --> 이거가 핵심
+
+using namespace std;
+
+int main() {
+
+	int N;
+	cin >> N;
+
+	string s;
+	map<int, string> m;
+	vector<string> words;
+	
+	// cin.ignore(); --> 이거 해줘야 줄바꿈은 저장이안됨.
+	// 맨 앞의 문자하나를 지운다 (?)
+	for (int i = 0; i < N+1; i++) {
+		getline(cin, s);
+		m.insert(pair<int, string>(i, s));
+	}
+
+	for (int i = 1; i < N+1; i++) {
+
+		stringstream ss(m.find(i)->second);
+
+		string word;
+		// 공백 분리 후, 배열에 저장
+		while (getline(ss, word, ' ')) { // 공백을 기준으로 단어를 나눠주는 함수
+			words.push_back(word);
+		}
+
+		cout << "Case #" << i << ": ";
+		for (int j = words.size() - 1; j >= 0; j--) {
+			cout << words[j] << ' ';
+		}
+		cout << endl;
+
+		words.clear();
+
+	}
+
+	return 0;
+}
+
+
+#endif
+
+// =========
+// 3주차 
+
+#if 0
+// 6615 : 콜라츠 추측
+
+/*
+
+짝수면 Xj+1 = Xi/2
+홀수면 Xj+1 = 3*Xi + 1
+
+*/
+
+/*
+
+
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+int main() {
+
+	vector<long long> Sa;
+	vector<long long> Sb;
+	map<long long, long long> _Sb;
+
+	long long v1;
+	long long v2;
+
+	int idx = 0;
+	while (1) {
+
+		cin >> v1 >> v2;
+
+		if (v1 == 0 && v2 == 0) {
+			break;
+		}
+
+		while (1) {
+			Sa.push_back(v1);
+
+			if (v1 == 1) break;
+
+			if (v1 % 2 == 0) { // 짝수일 경우
+				v1 = v1 / 2;
+			}
+			else { // 홀수일 경우
+				v1 = 3 * v1 + 1;
+			}
+		}
+
+		idx = 0;
+
+		while (1) {
+			Sb.push_back(v2);
+			_Sb.insert(pair<int, int>(v2, idx));
+			idx++;
+
+			if (v2 == 1) break;
+
+			if (v2 % 2 == 0) { // 짝수일 경우
+				v2 = v2 / 2;
+			}
+			else { // 홀수일 경우
+				v2 = 3 * v2 + 1;
+			}
+		}
+		
+		int c;
+		for (int i = 0; i < Sa.size(); i++) {
+			if (_Sb.count(Sa[i]) == 1) {
+				Sa.push_back(i);
+				Sb.push_back(_Sb.find(Sa[i])->second);
+				c = Sa[i];
+				break;
+			}
+		}
+
+		printf("%d needs %d steps, %d needs %d steps, they meet at %d\n",Sa[0], Sa.back(), Sb[0], Sb.back(), c);
+
+		Sa.clear();
+		Sb.clear();
+		_Sb.clear();
+	}
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 9048 : 수위 아저씨의 고민
+
+/*
+
+전광판은 어떻게 끄지?
+전광판을 끄지 전에는 왼쪽에 있는 엘베만 탈 수 있고,
+		 끄고 난 후에는 오른쪽에 있는 엘베만 탈 수 있다.
+
+엘베와 각 사무실과의 거리는 1로 가정한다.
+엘베를 이용한 층간 이동거리도 1로 가정한다.
+*/
+
+/*
+
+4 5 2 -> 4층 5개씩 2개의 등이 켜져있음
+1 1 -> 1층에 1번 방
+4 5 -> 4층에 5번 방
+
+	*
+0 0 0 0 1
+0 0 0 0 0
+0 0 0 0 0
+1 0 0 0 0
+
+케이스를 나눠보는 것이 중요함
+중간 2개의 방이 켜져있을 경우에 어떻게 해아할까?
+
+*/
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+
+	int T;
+	int F, R, N;
+	cin >> T;
+	
+	int a, b;
+	for (int i = 0; i < T; i++) {
+		cin >> F >> R >> N;
+
+		for (int j = 0; j < N; j++) {
+			cin >> a >> b;
+
+
+
+		}
+
+	}
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 2863 : 이게 분수?
+#include <iostream>
+#include <vector>
+
+/*
+
+A B
+C D
+
+표의 값은 A/C + B/D 이다.
+
+*/
+
+using namespace std;
+
+int main() {
+
+	// 2칸을 만들고, 그 안을 vector<int>(2,0)으로 채운다
+	vector<vector<double> > v(2,vector<double>(2,0));
+
+	double n;
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 2; j++) {
+			cin >> n;
+			v[i][j] = n;
+		}
+	}
+
+	vector<double> res; // 0번, 1번, 2번, 3번 돌린 값 저장하는 vector
+
+	/*
+	
+	0번째 : v[0][0]/v[1][0] + v[0][1]/v[1][1]
+	1번째 : v[1][0]/v[1][1] + v[0][0]/v[0][1]
+	2번째 : v[1][1]/v[0][1] + v[1][0]/v[0][0]
+	3번째 : v[0][1]/v[0][0] + v[1][1]/v[1][0]
+	
+	*/
+
+	res.push_back(v[0][0] / v[1][0] + v[0][1] / v[1][1]);
+	res.push_back(v[1][0] / v[1][1] + v[0][0] / v[0][1]);
+	res.push_back(v[1][1] / v[0][1] + v[1][0] / v[0][0]);
+	res.push_back(v[0][1] / v[0][0] + v[1][1] / v[1][0]);
+
+	/*for (int i = 0; i < 4; i++) {
+		cout << res[i] << ' ';
+	}
+	cout << endl;*/
+
+	double temp = res[0];
+	double idx = 0;
+	for (int i = 1; i < 4; i++) {
+		if (res[i] > temp) {
+			temp = res[i];
+			idx = i;
+		}
+	}
+
+	// 같은 값이 있을 때 검사하는 코드
+	for (int i = 0; i < 4; i++) {
+		if (idx != i && res[idx] == res[i]) {
+			temp = res[0];
+			idx = temp;
+			for (int j = 1; j < 4; j++) {
+				if (res[j] < temp) {
+					temp = res[j];
+					idx = temp;
+				}
+			}
+		}
+	}
+
+	cout << idx;
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 2864 : 5와 6의 차이
+
+/*
+
+두 수의 합 중 최솟값과 최댓값을 출력한다.
+
+최솟값인 경우는 6을 모두 5로 바꾸고 합한 경우
+최댓값인 경우는 5를 모두 6으로 바꾸고 합한 경우 
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+
+	long long min, max;
+
+	long long A, B;
+	cin >> A >> B;
+
+	vector <int> v1;
+	vector <int> v2;
+
+	while (A > 0) {
+		v1.push_back(A % 10);
+		A = A / 10;
+	}
+	while (B > 0) {
+		v2.push_back(B % 10);
+		B = B / 10;
+	}
+
+	long long temp;
+	long long sum_A = 0;
+	long long sum_B = 0;
+	// 최솟값 - 6을 모두 5로 바꾸고 합한 경우
+	for (int i = 0; i < v1.size(); i++) {
+		temp = pow(10, i);
+		if (v1[i] == 6) {
+			sum_A += 5 * temp;
+		}
+		else {
+			sum_A += v1[i] * temp;
+		}
+	}
+	for (int i = 0; i < v2.size(); i++) {
+		temp = pow(10, i);
+		if (v2[i] == 6) {
+			sum_B += 5 * temp;
+		}
+		else {
+			sum_B += v2[i] * temp;
+		}
+	}
+	min = sum_A + sum_B;
+
+	sum_A = 0;
+	sum_B = 0;
+	// 최댓값 - 5를 모두 6으로 바꾸고 합한 경우
+	for (int i = 0; i < v1.size(); i++) {
+		temp = pow(10, i);
+		if (v1[i] == 5) {
+			sum_A += 6 * temp;
+		}
+		else {
+			sum_A += v1[i] * temp;
+		}
+	}
+	for (int i = 0; i < v2.size(); i++) {
+		temp = pow(10, i);
+		if (v2[i] == 5) {
+			sum_B += 6 * temp;
+		}
+		else {
+			sum_B += v2[i] * temp;
+		}
+	}
+	max = sum_A + sum_B;
+
+	cout << min << ' ' << max;
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 6566 : 애너그램 그룹
+
+/*
+
+입력을 다 정렬하고 
+같으면 같은 그룹으로 묶어라 
+
+같은 단어가 있을 때 개수는 올라가는데 출력은 하나만
+
+map으로 temp에 sort 해두고 그 map[temp] => 이쪽에 값으로 sort 전 값을 저장해줌 
+string 뒤로 뒤로 이거는 
+
+tuple --> 두 개 이상의 자료형을 ? 저장할 수 있음
+
+*/
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+
+
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 26069 : 붙임성 좋은 총총이
+#include <iostream>
+#include <map>
+#include <cstring> // -> c++은 strcmp 헤더파일 cstring이다
+
+using namespace std;
+
+int main() {
+
+	int N;
+	cin >> N;
+
+	map<string,int> res;
+	string Ai;
+	string Bi;
+	for (int i = 0; i < N; i++) {
+		cin >> Ai >> Bi;
+		char* s_A = const_cast<char*>(Ai.c_str()); // string Ai를 char* 형으로
+		char* s_B = const_cast<char*>(Bi.c_str()); // string Ai를 char* 형으로
+		if (strcmp(s_A, "ChongChong") == 0 || strcmp(s_B, "ChongChong") == 0 
+			|| res.count(Ai) == 1 || res.count(Bi) == 1) {
+			res.insert(pair<string, int>(s_A, 1));
+			res.insert(pair<string, int>(s_B, 1));
+			res.insert(pair<string, int>(Ai, 1));
+			res.insert(pair<string, int>(Ai, 1));
+		}
+	}
+
+	cout << res.size();
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 2563 : 색종이
+
+/*
+
+10*10 사각형의 왼쪽 아래의 좌표(a,b)가 입력으로 주어지는데
+이때 각각의 사각형이 a - _a < 10 이고, b - _b < 10이면 
+(a+10 - _a) * (_b+10 - b) --> 10더하는 것은 비교 대상 중에 작은 값에 10을 더해준다.
+
+들어오는 순서대로 겹치는 만큼 빼주고 넓이 저장하고 뺴주고 넓이 저장하고 
+
+아니면,
+
+2. map을 2차원 배열로 생각해서 해당하는 좌표(a,b)를 인덱스로 만들어서 
+map에 넣어준다. -> 그리고 이 map의 size를 출력한다.
+100,100까지 있는 좌표니까 (a,b)를 -> a*100 + b 인덱스로 만들었다.
+처음에 a*10 + b로 했는데 겹치는 부분이 있어서 제대로 size를 출력하지 못했는데,
+a*100 + b로 바꾸니까 제대로 됐다.
+
+*/
+
+#include <iostream>
+#include <map>
+
+// set -> map이랑 비슷한데 key만 있는거 
+
+using namespace std;
+
+int main() {
+
+	map<long long, long long> map;
+	int N;
+	cin >> N;
+
+	int a, b;
+	for (int i = 0; i < N; i++) {
+		cin >> a >> b;
+
+		for (int j = 0; j < 10; j++) {
+			for (int k = 0; k < 10; k++) {
+				if (map.count((a + j) * 100 + b+k) == 0) {
+					map.insert(make_pair( (a + j) * 100 + b + k, 1));
+					// pair long long =--
+					// {}
+				}
+			}
+		}
+
+	}
+
+	cout << map.size();
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 2786 : 상근이의 레스토랑
+
+/*
+
+음식 N개가 있는데 
+첫번째 시킬때의 가격과 아닐때의 가격이 다르다.
+이때 i개의 음식을 주문할 때의 최소급액을 N번 출력한다.
+ (1<=i<=N)
+
+*/
+
+/*
+
+10 5
+9 3 
+10 5
+
+일 경우 2개를 구매할 때 9 3을 안사는 건 아니다 
+두번쨰에 구매하는 것 
+
+두개 구매한 것까지만 최소 금액을 정하면
+그 뒤는 첫번쨰로 시킨게 아닐때의 가격과 이미 사지 않은 것 중 
+가장 작은 가격을 선택하면 된다.
+
+*/
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+
+	int N;
+	cin >> N;
+
+	int a, b;
+	for (int i = 0; i < N; i++) {
+		cin >> a >> b;
+
+
+
+	}
+
+	return 0;
+}
+
+
+#endif
+
+// ============
+// day 4
+
+#if 0
+// 28295 : 체육은 코딩과목 입니다
+
+/*
+
+초기 : 북쪽을 바라보고 있음
+
+ti = 1 -> 우향우
+ti = 2 -> 뒤로 돌아
+ti = 3 -> 좌향좌
+
+*/
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+
+	int N;
+	char d = 'N';
+
+	for (int i = 0; i < 10; i++) {
+
+		cin >> N;
+
+		switch (d) {
+		case 'N':
+
+			if (N == 1) {
+				d = 'E';
+			}
+			else if (N == 2) {
+				d = 'S';
+			}
+			else {
+				d = 'W';
+			}
+
+			break;
+		case 'E':
+
+			if (N == 1) {
+				d = 'S';
+			}
+			else if (N == 2) {
+				d = 'W';
+			}
+			else {
+				d = 'N';
+			}
+
+			break;
+		case 'W':
+
+			if (N == 1) {
+				d = 'N';
+			}
+			else if (N == 2) {
+				d = 'E';
+			}
+			else {
+				d = 'S';
+			}
+
+			break;
+		case 'S':
+
+			if (N == 1) {
+				d = 'W';
+			}
+			else if (N == 2) {
+				d = 'N';
+			}
+			else {
+				d = 'E';
+			}
+
+			break;
+		}
+
+	}
+
+	cout << d;
+
+	return 0;
+}
+
+
+#endif
+
+#if 1
+// 28298 : 더 흔한 타일 색칠 문제
+
+/*
+
+N, M, K
+N*M 크기의 타일을 K*K 크기의 타일로 나눴을 때
+각각의 나눠진 타일의 색상 배치가 전부 동일하도록 타일의 
+일부 칸을 골라 다시 색칠한다. 
+
+출력
+다시 칠해야 하는 타일의 최소 개수 출력
+새로 칠한 타일 출력
+
+*/
+
+/*
+
+행에서 K 크기 씩 같도록 반복하면 되는거 아님?
+
+
+*/
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+
+	int N, M, K;
+	cin >> N >> M >> K;
+
+	char s[600][600];
+	for (int i = 0; i < N; i++) {
+		cin >> s[i];
+	}
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			cout << s[i][j];
+			if ((j + 1) % K == 0) cout << ' ';
+		}
+		cout << endl;
+		if ((i + 1) % K == 0) cout << endl;
+	}
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 17478 : 재귀함수가 뭔가요?
+#include <iostream>
+
+using namespace std;
+
+void print(int n) {
+	for (int i = 0; i < n; i++) {
+		cout << "____";
+	}
+}
+
+void fun(int n) {
+
+	if (n == 0) {
+		return;
+	}
+
+	fun(n - 1);
+	
+	print(n-1);
+	cout << "\"재귀함수가 뭔가요?\"" << endl;
+	print(n-1);
+	cout << "\"잘 들어보게. 옛날옛날 한 산 꼭대기에 이세상 모든 지식을 통달한 선인이 있었어." << endl;
+	print(n-1);
+	cout << "마을 사람들은 모두 그 선인에게 수많은 질문을 했고, 모두 지혜롭게 대답해 주었지." << endl;
+	print(n-1);
+	cout << "그의 답은 대부분 옳았다고 하네. 그런데 어느 날, 그 선인에게 한 선비가 찾아와서 물었어.\"" << endl;
+
+}
+
+void fun_2(int n) {
+	if (n < 0) return;
+
+	print(n);
+	cout << "라고 답변하였지." << endl;
+
+	fun_2(n - 1);
+
+}
+
+int main() {
+
+	int N;
+	cin >> N;
+
+	cout << "어느 한 컴퓨터공학과 학생이 유명한 교수님을 찾아가 물었다." << endl;
+	fun(N);
+	print(N);
+	cout << "\"재귀함수가 뭔가요?\"" << endl;
+	print(N);
+	cout << "\"재귀함수는 자기 자신을 호출하는 함수라네\"" << endl;
+	fun_2(N);
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 13458 : 시험 감독
+
+/*
+
+B : 총감독관은 한 시험장에서 감시할 수 있는 응시자의 수가 B명이다. 
+C : 부감독관은 한 시험장에서 감시할 수 있는 응시자의 수가 C명이다.
+
+각각의 시험장에 총감독관은 오직 1명만 있어야 하고, 부감독관은 여러 명 있어도 된다.
+
+*/
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+
+	long long N, B, C;
+	cin >> N;
+
+	vector<long long> A;
+	long long a;
+	for (int i = 0; i < N; i++) {
+		cin >> a;
+		A.push_back(a);
+	}
+	cin >> B >> C;
+
+	long long n = 0;
+	for (int i = 0; i < A.size(); i++) {
+		n++;
+		A[i] -= B;
+
+		if (A[i] > 0) {
+			if (A[i] % C == 0) {
+				n += A[i] / C;
+			}
+			else {
+				n += (A[i] / C + 1);
+			}
+		}
+	}
+
+	cout << n;
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 25972 : 도미노 무너트리기
+
+/*
+
+a : 도미노의 x좌표
+l : 도미노의 길이
+
+길이 l를 가지는 도미노가 위치 a에 있을 때
+오른쪽으로 무너질 경우 좌표 값이 a보다 크고 a+l보다 작거나 같은 도미노 중
+가장 작은 좌표를 가지는 도미노가 오른쪽으로 무너진다.
+
+모든 도미노가 무너지려면 처음에 몇 개의 도미노를 무너트려야 하는지 구해주자.
+
+*/
+
+/*
+
+6
+2 4
+10 4
+3 5
+6 9
+15 5
+13 1
+
+*/
+
+#include <iostream>
+#include <map>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+
+	map<int, int> map;
+	vector<int> keys;
+
+	long long N, a, l;
+	cin >> N;
+
+	for (int i = 0; i < N; i++) {
+		cin >> a >> l;
+		map.insert(pair<int, int>(a, l));
+		keys.push_back(a);
+	}
+	
+	sort(keys.begin(), keys.end());
+
+	long long num = 1;
+	for (int i = 0; i < keys.size()-1; i++) {
+		
+		if (keys[i] < keys[i + 1] && map.find(keys[i])->second + keys[i] >= keys[i + 1]) {
+			
+		}
+		else {
+			num++;
+		}
+
+	}
+
+	cout << num;
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 20362 : 유니대전 퀴즈쇼
+#include <iostream>
+#include <map>
+#include <vector>
+
+using namespace std;
+
+int main() {
+
+	int N;
+	string S, t1, t2;
+	map<string, string> map;
+	vector<string> v;
+
+	cin >> N >> S;
+	for (int i = 0; i < N; i++) {
+		cin >> t1 >> t2;
+		map.insert(pair<string, string>(t1, t2));
+		v.push_back(t1);
+	}
+
+	string s;
+	int num = 0;
+	for (int i = 0; i < v.size(); i++) {
+		s = map.find(S)->second;
+
+		if (S == v[i]) {
+			break;
+		}
+		else if(s == map.find(v[i])->second) {
+			num++;
+		}
+
+	}
+
+	cout << num;
+
+	return 0;
+}
+
+#endif
+
+#if 0
+// 18234 : 당근 훔쳐 먹기
+/*
+
+N종류의 당근
+T일 동안 재배할 예정
+
+당근 i는 처음에는 Wi의 맛을 가지고 있고, 
+각 당근 i에 사용할 Pi만큼 맛을 증가시켜주는 
+영양제가 당근 종류별로 T개씩 준비되어 있다.
+
+매일 오전에만 텃밭에 나와 당근들을 관리 
+오리는 각 당근 i에 대해 당근 i가 자리에 없다면 당근 i를 심고,
+그렇지 않다면 당근 i에 영양제를 하나 준다
+
+토끼는 하루에 최대 하나의 당근을 먹을 수 있고, 먹지 않을 수도 있다.
+T일 동안 토끼가 먹을 수 있는 당근의 맛의 합의 최댓값
+
+*/
+
+/*
+
+맨 끝에서부터 
+
+영양제가 처음보다 맛있는게 포인트
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+
+	long long N, T, w, p;
+	cin >> N >> T;
+
+	vector <pair<long long, long long>> v;
+
+	for (int i = 0; i < N; i++) {
+		cin >> w >> p;
+		v.push_back(make_pair(p, w));
+	}
+
+	sort(v.begin(), v.end());
+
+	long long temp;
+	long long sum = 0;
+	for (int i = 0; i < N; i++) {
+		temp = v[i].second + (v[i].first * (T - N + i));
+		sum += temp;
+	}
+
+	cout << sum;
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 25195 : Yes or Yes -> 시간초과
+
+/*
+
+N개의 정점과 M개의 간선
+1번 정점에서 출발 더 이상 간선을 따라서 이동할 수 없는 경우 투어리스트 종료
+
+투어리스트 곰곰이가 어떻게 이동하더라도 
+팬클럽 곰곰이를 만나게 된다면, Yes를 
+팬클럽 곰곰이를 만나지 않고 이동하는 방법이 존재한다면 yes를 출력
+
+*/
+
+/*
+
+되긴되는데 ... 시간초과
+재귀함수 때매 시간초과나는듯
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+#include <stack>
+
+using namespace std;
+
+struct node {
+	int data;
+	struct node* next;
+};
+
+struct node* _map[100001];
+
+void addEdge(int u, int v) {
+
+	struct node* _new = (struct node*)malloc(sizeof(struct node));
+	_new->data = v;
+	_new->next = 0;
+
+	if (_map[u] == 0) {
+		_map[u] = _new;
+		return;
+	}
+
+	struct node* temp = _map[u];
+	while (temp->next != 0) {
+		temp = temp->next;
+	}
+	temp->next = _new;
+
+}
+
+int find_vtx(int v1, int v2) {
+	if (_map[v1] == 0) {
+		return 0;
+	}
+	else {
+		struct node* temp = _map[v1];
+		while (temp != 0) {
+			if (temp->data == v2) {
+				return 1;
+			}
+			temp = temp->next;
+		}
+
+		return 0;
+	}
+}
+
+std::stack<int> stack;
+set<int> visit, twice;
+string str = "Yes";
+int check, cnt, _cnt;
+void DFS(int v, int goal, set<int>& all_keys) {
+
+	if (_map[1] == 0) {
+		check = 1;
+		return;
+	}
+
+	visit.insert({ v });
+	::stack.push(v);
+
+	if (v == goal) {
+
+		if ( cnt == _cnt) {
+			check = 1;
+		}
+
+		cnt = 0;
+		_cnt = 0;
+
+		::stack.pop();
+		return;
+	}
+
+	for(auto it = all_keys.begin(); it != all_keys.end(); ++it){
+		// 노드가 이어져있고 방문을 하지 않았으면
+		if (find_vtx(v,*it) == 1 && visit.count(*it) == 0) {
+			_cnt++;
+			if (twice.count(v)==1 || twice.count(*it) == 1) {
+				str = "Yes";
+			}
+			else {
+				str = "yes";
+				cnt++;
+			}
+			
+			DFS(*it,goal,all_keys);
+			visit.erase(*it);
+		}
+	}
+
+	::stack.pop();
+}
+
+int main() {
+
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+
+	int N, M, u, v;
+	cin >> N >> M;
+
+	set<int> keys;
+	set<int> all_key;
+	for (int i = 0; i < M; i++) {
+		cin >> u >> v;
+		addEdge(u, v);
+		all_key.insert({ u });
+		all_key.insert({ v });
+		keys.insert({ v });
+	}
+
+	int S, s; // 곰곰이가 존재하는 정점의 개수와 정점의 번호
+	cin >> S;
+	for (int i = 0; i < S; i++) {
+		cin >> s;
+		twice.insert({ s });
+	}
+
+	// 경로가 없는 정점을 찾는다.
+	vector<int> non_vertex;
+	for (auto it = keys.begin(); it != keys.end(); ++it) {
+		if (_map[*it] == 0) {
+			non_vertex.push_back(*it);
+		}
+	}
+
+	// 1번 정점부터 경로가 없는 정점들의 모든 경로를 찾는다.
+	// 모든 경로에서 곰곰이를 만나지 않고 이동하는 방법이 존재하면 yes 출력
+	for(int i=0; i<non_vertex.size(); i++){
+		DFS(1,non_vertex[i], all_key);
+		if (check == 1) break;
+	}
+
+	if (check == 1) {
+		cout << "yes";
+	}
+	else {
+		cout << "Yes";
+	}
+
+	return 0;
+}
+
+
+#endif
+
+#if 0
+// 25195 : Yes or Yes
+
+/*
+
+// 처음 출발 지점을 visit과 stack에 넣는다.
+// 출발 지점과 연결된 vertex를 찾고 연결된 것을 찾으면 stack에 넣는다
+// 계속 이를 반복한다.
+// 그러다 내가 찾는 도착지점이 발견되면 pop을 한다.
+// 이 과정에서 중간 경로에 곰곰이가 있는지 확인 !!
+
+// 도착 지점 발견하면 stack에 있는 값을 pop을 하고
+// stack 맨 위에 있는 vertex와 또 다른 연결되어 있는 곳을 찾는다.
+// 해당 위치에
+
+*/
+
+/*
+
+<반례>
+5 5
+1 2
+2 3
+2 4
+3 5
+4 5
+1 
+2
+yes
+
+<반례 - 2>
+7 6
+1 2
+1 5
+2 3
+3 4
+5 6
+6 7
+1
+5
+
+*/
+
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+#include <stack>
+
+using namespace std;
+
+struct node {
+	int data;
+	struct node* next;
+};
+
+struct node* _map[100001];
+
+void addEdge(int u, int v) {
+
+	struct node* _new = (struct node*)malloc(sizeof(struct node));
+	_new->data = v;
+	_new->next = 0;
+
+	if (_map[u] == 0) {
+		_map[u] = _new;
+		return;
+	}
+
+	struct node* temp = _map[u];
+	while (temp->next != 0) {
+		temp = temp->next;
+	}
+	temp->next = _new;
+
+}
+
+std::stack<int> stack, _v;
+set<int> visit;
+vector<int> twice;
+int check, cnt, _cnt, bear;
+void DFS() {
+
+	::stack.push(1); // 처음 v는 무조건 1
+
+	while (1) {
+
+		if (::stack.empty()) {
+			break;
+		}
+
+		int tmp = ::stack.top();
+		visit.insert({ tmp });
+		::stack.pop();
+		_v.push(tmp);
+
+		if (_map[tmp] == 0) {
+
+			// 끝까지 온 경로 중에서 곰곰이가 있는 vertex를 지나온 경우를 
+			// 확인한다.
+			for (int i = 0; i < twice.size(); i++) {
+				if (visit.count(twice[i]) == 1) {
+					bear = 1;
+				}
+			}
+
+			if (bear == 1) { // 곰곰이가 지나왔으면 
+				// 스택에 있는 마지막 값을 만나기 전까지 visit에 있는 값을 pop한다.
+				// 그리고 다시 방문한 vertex를 visit에 기록한다.
+
+				// 이것을 하는 이유는 경로가 바뀌는 시점을 찾기 위해서 
+
+				if (::stack.empty()) { // 스택이 비어있으면 그냥 break
+					break;
+				}
+				else {
+					while (1) {
+
+						// 스택에 있는 마지막 값을 만날때까지 visit에 있는 값 pop
+						int stop = 0;
+						int v1 = _v.top();
+						if (_map[v1] != 0) {
+							struct node* _temp = _map[v1];
+							while (_temp != 0) {
+								if (_temp->data == ::stack.top()) {
+									stop = 1;
+								}
+								_temp = _temp->next;
+							}
+						}
+
+						if (stop == 0) {
+							_v.pop();
+							visit.erase(v1);
+						}
+						else {
+							break;
+						}
+					}
+				}
+			}
+			else {
+				check = 1;
+				break;
+			}
+			bear = 0;
+		}
+
+		struct node* _cur = _map[tmp];
+		while (_cur != 0) {
+			::stack.push(_cur->data);
+
+			_cur = _cur->next;
+		}
+
+	}
+
+}
+
+int main() {
+
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+
+	int N, M, u, v;
+	cin >> N >> M;
+
+	for (int i = 0; i < M; i++) {
+		cin >> u >> v;
+		addEdge(u, v);
+	}
+
+	int S, s; // 곰곰이가 존재하는 정점의 개수와 정점의 번호
+	cin >> S;
+	for (int i = 0; i < S; i++) {
+		cin >> s;
+		twice.push_back({ s });
+	}
+
+	DFS();
+
+	if (check == 1) {
+		cout << "yes";
+	}
+	else {
+		cout << "Yes";
+	}
+
+	return 0;
+}
+
+
+#endif
